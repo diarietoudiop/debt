@@ -8,17 +8,17 @@ use App\Core\Validator;
 
 class UtilisateurController extends Controller
 {
-
     public function index()
     {
         $data = [];
-
         if (isset($_REQUEST["search"])) {
-            $method = "search";
-            $data = [$this->model->$method($_REQUEST["telephone"], 0)];
-            if (count($data)) {
-                Session::set("telephone_client", $data[0]->telephone);
+            $leNomDuMethode = "search";
+            $data = [$this->model->$leNomDuMethode($_REQUEST["telephone"], 0)];
+            if ($data[0] != false) {
+                Session::set("client", $data[0]->telephone);
             }
+        }else{
+            Session::unset('client');
         }
 
         foreach (["prenom", "nom", "email", "telephone"] as $champ) {
@@ -55,6 +55,7 @@ class UtilisateurController extends Controller
 
                 // Stocker le message de succès dans la session
                 Session::set("success_message", "Client enregistré avec succès!");
+                
 
                 // Rediriger vers la même page
                 $this->redirect('/');
@@ -64,4 +65,6 @@ class UtilisateurController extends Controller
 
         $this->renderView("index.php", ["data" => [], "error" => $error]);
     }
+
+    
 }

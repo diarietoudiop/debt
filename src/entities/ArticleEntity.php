@@ -13,4 +13,12 @@ class ArticleEntity extends Entity
     private string $photo;
     private int $prixUnitaire;
     private int $quantite;
+
+    public function getlibelle(): string { 
+        return $this->libelle;
+
+    }
+
+ 
+   
 }

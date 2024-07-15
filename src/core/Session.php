@@ -20,7 +20,7 @@ final class Session{
     public static function start() {
         
         // On vérifie si une session n'est pas active
-        if(session_status() === PHP_SESSION_DISABLED){
+        if(session_status() === PHP_SESSION_NONE){
             session_start();
         }
     }
@@ -33,7 +33,7 @@ final class Session{
     public static function close() {
 
         // On véfifie si une session est active
-        if(session_status() === PHP_SESSION_ACTIVE){
+        if(session_status() !== PHP_SESSION_NONE){
             session_destroy();
         }
     }

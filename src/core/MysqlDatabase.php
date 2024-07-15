@@ -62,7 +62,7 @@ final class MysqlDatabase
         $this->password = $password;
         $this->getInstance($dbType); // Initialisation de la connexion dans le constructeur
     }
-
+    
 
     /**
      * Initialise la connexion PDO à la base de données spécifiée.

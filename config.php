@@ -1,4 +1,5 @@
 <?php 
+use Symfony\Component\Yaml\Yaml;
 
 
 define("ROOT", "/var/www/html/projetboutik");
@@ -7,6 +8,11 @@ require ROOT . '/vendor/autoload.php';
 
 $dotenv = Dotenv\Dotenv::createImmutable(ROOT);
 $dotenv->load();
+
+
+
+$config =  Yaml::parseFile("/var/www/html/projetboutik/config.yaml");
+
 
 
 define('DB_TYPE', $_ENV['DB_TYPE']);

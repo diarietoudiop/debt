@@ -1,0 +1,4 @@
+database: App\Core\MysqlDatabase
+validator: App\Core\Validator
+session: App\Core\Session
+file: App\Core\Files

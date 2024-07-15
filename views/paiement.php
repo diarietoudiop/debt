@@ -1,5 +1,5 @@
 
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="fr">
 
 <head>
@@ -18,7 +18,7 @@
         <div class="grid grid-cols-3 gap-6 mb-6">
             <div>
                 <label class="block text-black font-bold mb-2">Client :</label>
-                <input type="text" class="w-full px-4 py-3 border rounded"  value="<?=$client->prenom ." ". $client->nom?>" disabled>
+                <input type="text" class="w-full px-4 py-3 border rounded"  value="<?=$data->prenom ." ". $data->nom?>" disabled>
             </div>
             <div>
                 <label class="block text-black font-bold mb-2">Montant Total :</label>
@@ -30,7 +30,7 @@
             </div>
         </div>
         <div class="mb-6">
-            <table class="min-w-full bg-white rounded-lg shadow-md">
+            <table class="min-w-full bg-white rounded-lg shadow-md"> 
                 <thead>
                     <tr class="bg-blue-200">
                         <th class="py-3 px-4 text-left">Date</th>
@@ -54,4 +54,20 @@
     </div>
 </body>
 
-</html>
+</html> -->
+
+<?php
+// Vérifiez que les variables sont définies avant de les utiliser
+if (isset($data) && isset($client)) {
+    // Affichez les données du paiement et du client
+    foreach ($data as $paiement) {
+        echo "Paiement ID: " . htmlspecialchars($paiement['id']) . "<br>";
+        echo "Montant: " . htmlspecialchars($paiement['montant']) . "<br>";
+        echo "Date: " . htmlspecialchars($paiement['date']) . "<br>";
+        // Affichez les informations du client ici
+        echo "Client: " . htmlspecialchars($client['nom']) . " " . htmlspecialchars($client['prenom']) . "<br>";
+    }
+} else {
+    echo "Aucune donnée de paiement ou de client trouvée.";
+}
+?>
