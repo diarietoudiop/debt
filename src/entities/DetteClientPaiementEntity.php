@@ -18,7 +18,7 @@ class DetteClientPaiementEntity extends Entity
     private int $montant;
     private int $montantVerser;
     private int $montantRestant;
-
+    private int $idClient;
     /**
      * Get the value of prenom
      *
@@ -28,6 +28,17 @@ class DetteClientPaiementEntity extends Entity
     {
         return $this->prenom;
     }
+
+    /**
+     * Get the value of prenom
+     *
+     * @return string
+     */
+    public function getIdClient(): string
+    {
+        return $this->idClient;
+    }
+
 
     /**
      * Set the value of prenom

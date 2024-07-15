@@ -57,111 +57,183 @@ use ReflectionMethod;
 // }
 
 
+// class Route
+// {
+//     private static $routes = [];
+//     private static $instance = null;
+
+//     private function __construct() {}
+
+//     public static function getInstance()
+//     {
+//         if (self::$instance === null) {
+//             self::$instance = new self();
+//         }
+//         return self::$instance;
+//     }
+//     public static function get($path, $controller, $action)
+//     {
+//         self::addRoute('GET', $path, $controller, $action);
+//     }
+
+//     public static function post($path, $controller, $action)
+//     {
+//         self::addRoute('POST', $path, $controller, $action);
+//     }
+
+//     private static function addRoute($method, $path, $controller, $action)
+//     {
+//         self::$routes[] = [
+//             'method' => $method,
+//             'path' => $path,
+//             'controller' => $controller,
+//             'action' => $action
+//         ];
+//     }
+
+//     public function handleRequest($method, $uri)
+//     {
+//         foreach (self::$routes as $route) {
+//             if ($this->matchRoute($route, $method, $uri)) {
+//                 return $this->callAction($route['controller'], $route['action']);
+//             }
+//         }
+        
+//         // Si aucune route ne correspond
+//         http_response_code(404);
+//         echo "404 Not Found";
+//     }
+
+//     private function matchRoute($route, $method, $uri)
+//     {
+//         if ($route['method'] !== $method) {
+//             return false;
+//         }
+
+//         $pattern = $this->convertPathToRegex($route['path']);
+//         return preg_match($pattern, $uri);
+//     }
+
+//     private function convertPathToRegex($path)
+//     {
+//         $pattern = preg_replace('/\/{([^\/]+)}/', '/(?P<$1>[^/]+)', $path);
+//         return '#^' . $pattern . '$#';
+//     }
+
+//     private function callAction($controller, $action)
+//     {
+//         if (!class_exists($controller)) {
+//             throw new Exception("Controller class $controller not found");
+//         }
+
+//         $controllerInstance = new $controller();
+
+//         if (!method_exists($controllerInstance, $action)) {
+//             throw new Exception("Action $action not found in controller $controller");
+//         }
+
+//         $reflection = new ReflectionMethod($controller, $action);
+//         $params = $this->getActionParameters($reflection);
+
+//         return $reflection->invokeArgs($controllerInstance, $params);
+//     }
+
+//     private function getActionParameters(ReflectionMethod $reflection)
+//     {
+//         $params = [];
+//         foreach ($reflection->getParameters() as $param) {
+//             if (isset($_GET[$param->getName()])) {
+//                 $params[] = $_GET[$param->getName()];
+//             } elseif (isset($_POST[$param->getName()])) {
+//                 $params[] = $_POST[$param->getName()];
+//             } elseif ($param->isDefaultValueAvailable()) {
+//                 $params[] = $param->getDefaultValue();
+//             } else {
+//                 throw new Exception("Parameter {$param->getName()} is required but not provided");
+//             }
+//         }
+//         return $params;
+//     }
+// }
+
+
+use ReflectionClass;
+use ReflectionException;
+
+
 class Route
 {
-    private static $routes = [];
-    private static $instance = null;
+    private static array $routes = [];
 
-    private function __construct() {}
-
-    public static function getInstance()
+    public static function add(string $method, string $path, array $action)
     {
-        if (self::$instance === null) {
-            self::$instance = new self();
+        self::$routes[strtoupper($method)][$path] = $action;
+    }
+
+    public static function get(string $path, array $action)
+    {
+        self::add('GET', $path, $action);
+    }
+
+    public static function post(string $path, array $action)
+    {
+        self::add('POST', $path, $action);
+    }
+
+    public static function run($url)
+    {
+        $method = $_SERVER["REQUEST_METHOD"];
+        $route = self::match($method, $url);
+        if ($route) {
+            [$controller, $action] = $route;
+            self::invokeAction($controller, $action, self::extractParameters($route, $url));
+        } else {
+            self::sendResponse(['error' => "Route not found"], 404);
         }
-        return self::$instance;
     }
 
-    public static function get($path, $controller, $action)
+    private static function match($method, $url)
     {
-        self::addRoute('GET', $path, $controller, $action);
-    }
-
-    public static function post($path, $controller, $action)
-    {
-        self::addRoute('POST', $path, $controller, $action);
-    }
-
-    private static function addRoute($method, $path, $controller, $action)
-    {
-        self::$routes[] = [
-            'method' => $method,
-            'path' => $path,
-            'controller' => $controller,
-            'action' => $action
-        ];
-    }
-
-    public function handleRequest($method, $uri)
-    {
-        foreach (self::$routes as $route) {
-            if ($this->matchRoute($route, $method, $uri)) {
-                return $this->callAction($route['controller'], $route['action']);
+        if (isset(self::$routes[$method])) {
+            foreach (self::$routes[$method] as $path => $action) {
+                if (preg_match(self::convertToRegex($path), $url, $matches)) {
+                    return [$action[0], $action[1], array_slice($matches, 1)];
+                }
             }
         }
-        
-        // Si aucune route ne correspond
-        http_response_code(404);
-        echo "404 Not Found";
+        return false;
     }
 
-    private function matchRoute($route, $method, $uri)
+    private static function convertToRegex($path)
     {
-        if ($route['method'] !== $method) {
-            return false;
-        }
-
-        $pattern = $this->convertPathToRegex($route['path']);
-        return preg_match($pattern, $uri);
+        $path = preg_replace('/\{[a-zA-Z0-9_]+\}/', '([a-zA-Z0-9_]+)', $path);
+        return "#^$path$#";
     }
 
-    private function convertPathToRegex($path)
+    private static function invokeAction($controller, $action, $params)
     {
-        $pattern = preg_replace('/\/{([^\/]+)}/', '/(?P<$1>[^/]+)', $path);
-        return '#^' . $pattern . '$#';
+        try {
+            $reflectionClass = new ReflectionClass($controller);
+            $controllerInstance = $reflectionClass->newInstance();
+            $reflectionMethod = $reflectionClass->getMethod($action);
+            $response = $reflectionMethod->invokeArgs($controllerInstance, $params);
+            self::sendResponse($response);
+        } catch (ReflectionException $e) {
+            self::sendResponse(['error' => $e->getMessage()], 404);
+        }
     }
 
-    private function callAction($controller, $action)
+    private static function extractParameters($route, $url)
     {
-        if (!class_exists($controller)) {
-            throw new Exception("Controller class $controller not found");
-        }
-
-        $controllerInstance = new $controller();
-
-        if (!method_exists($controllerInstance, $action)) {
-            throw new Exception("Action $action not found in controller $controller");
-        }
-
-        $reflection = new ReflectionMethod($controller, $action);
-        $params = $this->getActionParameters($reflection);
-
-        return $reflection->invokeArgs($controllerInstance, $params);
-    }
-
-    private function getActionParameters(ReflectionMethod $reflection)
-    {
-        $params = [];
-        foreach ($reflection->getParameters() as $param) {
-            if (isset($_GET[$param->getName()])) {
-                $params[] = $_GET[$param->getName()];
-            } elseif (isset($_POST[$param->getName()])) {
-                $params[] = $_POST[$param->getName()];
-            } elseif ($param->isDefaultValueAvailable()) {
-                $params[] = $param->getDefaultValue();
-            } else {
-                throw new Exception("Parameter {$param->getName()} is required but not provided");
-            }
-        }
+        [$controller, $action, $params] = $route;
         return $params;
+    }
+
+    private static function sendResponse($response, $statusCode = 200)
+    {
+        // http_response_code($statusCode);
+        // header('Content-Type: application/json');
+        // echo json_encode($response);
     }
 }
 
-
-
-// $routes = [
-//     "GET" => [
-//         "/" => ["ClientController","index]
-//     ],
-//     "POSt" => []
-// ];

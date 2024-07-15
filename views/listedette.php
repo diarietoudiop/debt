@@ -5,11 +5,8 @@
 use App\Core\Session;
 use App\Model\DetteModel;
 
-// Instanciation du modèle DetteModel
 $detteModel = new DetteModel();
-// Appel de la méthode detteClient pour récupérer les données
 $data = $detteModel->detteClient(Session::get("client"));
-// Initialiser $data pour éviter les erreurs
 $data = isset($data) && is_array($data) ? $data : [];
 
 ?>
@@ -30,7 +27,7 @@ $data = isset($data) && is_array($data) ? $data : [];
                 <h2 class="text-2xl font-bold mb-6">Menu</h2>
                 <nav>
                     <ul class="space-y-2">
-                        <li><a href="#" class="block py-2 px-4 hover:bg-gray-700 rounded">Accueil</a></li>
+                        <li><a href="http://www.diary.shop:8005" class="block py-2 px-4 hover:bg-gray-700 rounded">Accueil</a></li>
                         <li><a href="#" class="block py-2 px-4 hover:bg-gray-700 rounded">Clients</a></li>
                         <li><a href="#" class="block py-2 px-4 hover:bg-gray-700 rounded">Dettes</a></li>
                         <li><a href="#" class="block py-2 px-4 hover:bg-gray-700 rounded">Rapports</a></li>
@@ -73,8 +70,15 @@ $data = isset($data) && is_array($data) ? $data : [];
                             <label class="mr-2">Recherche:</label>
                             <input type="text" class="p-2 mr-2 border border-gray-300 rounded-md w-44">
                             <button class="px-3 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Filtrer</button>
+                            
                         </form>
+                        <div>
+                        <?php if (!empty($data)): ?>
+                          <strong>Nom</strong> :  <span class="border-b p-3 text-center"><?= $data[0]->nom ?></span>
+                          <strong>Prenom</strong> :  <span class="border-b p-3 text-center"><?= $data[0]->prenom ?></span>
+                        <?php endif; ?>
 
+                        
                         <table class="w-full border-collapse mt-5 shadow-md">
                             <thead class="bg-gray-200">
                                 <tr>
@@ -89,15 +93,16 @@ $data = isset($data) && is_array($data) ? $data : [];
                             <tbody>
                                 <?php if (!empty($data)): ?>
                                     <?php foreach ($data as $dette): ?>
+                                        
                                     <tr class="hover:bg-gray-100">
                                         <td class="border-b p-3 text-center"><?= $dette->date ?></td>  
                                         <td class="border-b p-3 text-center"><?= $dette->montant ?></td>
                                         <td class="border-b p-3 text-center"><?= $dette->montantRestant ?></td>
                                         <td class="border-b p-3 text-center">
-                                            <a <?= Session::isset("client") ? "href='http://www.diary.shop:8005/payer'" : "" ?> class="bg-green-500 text-white ml-2 px-4 py-2 cursor-pointer rounded-md hover:bg-red-600 focus:outline-none">Payer</a>
+                                            <a <?= Session::isset("client") ? "href='http://www.diary.shop:8005/payer/{$dette->id}'" : "" ?> class="bg-green-500 text-white ml-2 px-4 py-2 cursor-pointer rounded-md hover:bg-red-600 focus:outline-none">Payer</a>
                                         </td>
                                         <td class="border-b p-3 text-center">
-                                            <a <?= Session::isset("client") ? "href='http://www.diary.shop:8005/paiement'" : "" ?> class="bg-green-500 text-white ml-2 px-4 py-2 cursor-pointer rounded-md hover:bg-red-600 focus:outline-none">Lister</a>
+                                            <a <?= Session::isset("client") ? "href='http://www.diary.shop:8005/listepaiement/{$dette->id}'" : "" ?> class="bg-green-500 text-white ml-2 px-4 py-2 cursor-pointer rounded-md hover:bg-red-600 focus:outline-none">Lister</a>
                                         </td>
                                         <td class="border-b p-3 text-center">
                                            

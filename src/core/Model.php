@@ -92,6 +92,21 @@ abstract class Model
         }
     }
 
+    function transaction(callable $callback): string
+    {
+        $msg = "";
+        $pdo = $this->database->getConnection();
+        try {
+            $pdo->beginTransaction();
+            $callback();
+            $pdo->commit();
+            $msg = "succès";
+        } catch (\Exception $e) {
+            $pdo->rollBack();
+            $msg = "Erreur:" . $e->getMessage();
+        }
+        return $msg;
+    }
 
     
 

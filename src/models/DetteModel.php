@@ -7,20 +7,6 @@ use App\Core\Model;
 class DetteModel extends Model
 {
 
-    // function detteById(int $id)
-    // {
-    //     $sql = "SELECT u.nom, u.prenom, u.telephone, d.date, COALESCE(SUM(d.montant), 0) AS montant, 
-    //             COALESCE(SUM(d.montant) - SUM(p.montant), COALESCE(SUM(d.montant), 0)) AS montantRestant
-    //             FROM Utilisateurs u
-    //             LEFT JOIN Dettes d ON u.id = d.client_id
-    //             LEFT JOIN Paiements p ON u.id = p.client_id
-    //             WHERE d.id = :id
-    //             GROUP BY u.nom, u.prenom, u.telephone;";
-    //     $entityName = "App\\Entity\\DetteClientEntity";
-        
-    //     return $this->prepare($sql, ["id" => $id], $entityName, true);
-    // }
-
     function detteClient(string $telephone)
     {
         $sql = "SELECT d.id, u.prenom,u.nom,u.telephone,d.date,d.montant, d.solder, (d.montant - IFNULL(SUM(p.montant), 0)) AS montantRestant
@@ -36,8 +22,6 @@ class DetteModel extends Model
         return $this->prepare($sql, ["telephone" => $telephone], $entityName);
     }
 
-    
-// Dans votre contrôleur ou modèle
 
 
     public function getDettesPaginees($page = 1, $itemsPerPage = 10)
@@ -54,23 +38,41 @@ class DetteModel extends Model
             ':limit' => $itemsPerPage,
             ':offset' => $offset
         ];
-        
-        // $dettes = $this->query($sql, $params);
-        
-        // Obtenir le nombre total de dettes
         $sqlCount = "SELECT COUNT(*) as total FROM Dettes";
         $totalDettes = $this->query($sqlCount)[0]->total;
         
         $totalPages = ceil($totalDettes / $itemsPerPage);
         
         return [
-            // 'dettes' => $dettes,
             'currentPage' => $page,
             'totalPages' => $totalPages
         ];
     }
 
+    public function recupererArticle(int $id){
+        $sql = "SELECT a.libelle,dd.quantite,a.prixUnitaire,(dd.quantite * a.prixUnitaire) AS montant,d.date AS date
+                FROM DetailsDettes dd
+                INNER JOIN Articles a ON dd.article_id = a.id
+                INNER JOIN Dettes d ON dd.dette_id = d.id
+                WHERE dd.dette_id = :id";
+        $entityName = "App\Entity\ArticleDetteEntity";
+        return $this->prepare($sql, ["id"=>$id], $entityName);
+    }
 
-// Dans votre contrôleur
+
+    public function recupererDette(int $id)
+    {
+        $sql = "SELECT d.id, u.id as idClient, u.prenom,u.nom,u.telephone,d.montant, COALESCE(SUM(p.montant), 0) AS montantVerser, (d.montant - IFNULL(SUM(p.montant), 0)) AS montantRestant
+                FROM Dettes d
+                LEFT JOIN PaiementsDettes pd ON d.id = pd.dette_id
+                LEFT JOIN Paiements p ON pd.paiement_id = p.id
+                INNER JOIN Utilisateurs u ON d.client_id = u.id
+                WHERE d.id = :id
+                GROUP BY d.id, d.montant, u.prenom, u.nom, u.telephone
+                ORDER BY d.date DESC";
+        $entityName = "App\Entity\DetteClientPaiementEntity";
+        return $this->prepare($sql, ["id" => $id], $entityName, true);
+    }
 
 }
+

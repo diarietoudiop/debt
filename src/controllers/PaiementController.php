@@ -1,56 +1,66 @@
 <?php
-
-
-
 namespace App\Controller;
-
 use App\Core\Controller;
-use App\Core\App;
 use App\Core\Session;
+use App\Core\Validator;
 
 
 class PaiementController extends Controller
 {
-    public function index()
+
+
+
+    public function list($id){
+
+        $method = "paiementDette";
+        $paiements = $this->model->$method($id);
+        $method = "getDette";
+        $id = (int)Session::get("client");
+        $client = [];
+        // Session::set("client", $id);
+        $this->renderView("listepaiement.php", ["client" => $client, "paiements" => $paiements]);
+    }
+
+    function payer($id)
     {
-        $telephone = Session::isset("telephone") ? Session::get("telephone") : "+221764076933";
-        $dette_id = Session::isset("dette_id") ? Session::get("dette_id") : 1;
-        
-        // Assurez-vous que le modèle est correctement chargé
-       
-        $clientModel = App::getInstance()->getModel("UtilisateurModel");
-        $paiementModel = App::getInstance()->getModel("PaiementModel");
-            if ($paiementModel === null) {
-                throw new \Exception("Impossible de charger le modèle PaiementModel.");
+        $method = "recupererDette";
+        $dette = $this->model->$method($id);
+        $error = [];
+        $succes = [];
+        if (isset($_REQUEST["payer"])) {
+            $error = Validator::validate($_POST, [
+                "paiement" => ["required", "numeric"]
+            ]);
+            $paiement = (int)$_REQUEST["paiement"];
+
+            if ($paiement < 1) $error["paiement"][] = "Le paiement doit être au minimum 1 fcfa";
+            if ($paiement > $dette->montantRestant) $error["paiement"][] = "Le paiement ne doit pas dépasser le montant restant";
+
+
+            if (!$error) {
+                $result = $this->model->save([
+                    "vendeur_id" => 1,
+                    "dette_id" => (int)$id,
+                    "montant" => $paiement,
+                    "client_id" => (int)$dette->idClient
+                ]);
+
+
+                if ($result == "succès") {
+                    $succes = [
+                        "msg" => "Le paiement a été enregistrer avec succes",
+                        "status" => true
+                    ];
+                    $dette = $this->model->$method($id);
+                } else {
+                    $succes = [
+                        "msg" => "Le paiement n'a été enregistrer",
+                        "status" => false
+                    ];
+                }
             }
-
-        // Vérifiez si la méthode existe dans le modèle
-        if (!method_exists($paiementModel, 'paimentFromDette')) {
-            throw new \Exception("La méthode paimentFromDette n'existe pas dans le modèle PaiementModel.");
         }
 
-        $method = "paiementFromDette";
-        $data = $paiementModel->$method($dette_id);
-        
-        $clientModel = App::getInstance()->getModel("Utilisateur");
-
-        // Vérifiez si la méthode existe dans le modèle
-        if (!method_exists($clientModel, 'search')) {
-            throw new \Exception("La méthode search n'existe pas dans le modèle Utilisateur.");
-        }
-
-        $method = "search";
-        $client = $clientModel->$method($telephone, $dette_id);
-
-        // Vérifiez que les données ne sont pas nulles avant de les utiliser
-        if (!$data) {
-            throw new \Exception("Aucune donnée de paiement trouvée pour la dette ID: $dette_id.");
-        }
-
-        if (!$client) {
-            throw new \Exception("Aucun client trouvé avec le téléphone: $telephone.");
-        }
-
-        $this->renderView("paiement.php", ["data" => $data, "client" => $client]);
+        $this->renderView("paiement.php", ["dette" => $dette, "error" => $error, "id" => $id, "succes" => $succes]);
     }
 }

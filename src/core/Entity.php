@@ -11,7 +11,7 @@ namespace App\Core;
 abstract class Entity {
     protected int $id;
 
-    public function getId(){
+    public function getId(): int {
         return $this->id;
     }
 
@@ -23,7 +23,7 @@ abstract class Entity {
      */
     public function __get(string $name) {
         $getter = "get".ucwords($name);
-        if(method_exists($this::class, $getter)){
+        if(method_exists($this, $getter)){
             return $this->$getter();
         }
         trigger_error('Propriété non définie : ' . $name, E_USER_NOTICE);
@@ -37,11 +37,14 @@ abstract class Entity {
      * @param mixed $value La valeur à assigner à la propriété.
      * @return void
      */
-    public function __set(string $name, mixed $value) {
+    public function __set(string $name, mixed $value): void {
         $setter = "set".ucwords($name);
-        if(method_exists($this::class, $setter)){
+        if(method_exists($this, $setter)){
             $this->$setter($value);
+        } else {
+            trigger_error('Propriété non définie : ' . $name, E_USER_NOTICE);
         }
-        trigger_error('Propriété non définie : ' . $name, E_USER_NOTICE);
     }
 }
+
+

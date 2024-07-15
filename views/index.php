@@ -35,7 +35,7 @@ use App\Core\Session;
                 <h2 class="text-2xl font-bold mb-6">Menu</h2>
                 <nav>
                     <ul class="space-y-2">
-                        <li><a href="#" class="block py-2 px-4 hover:bg-teal-700 rounded">Accueil</a></li>
+                        <li><a href="http://www.diary.shop:8005" class="block py-2 px-4 hover:bg-teal-700 rounded">Accueil</a></li>
                         <li><a href="#" class="block py-2 px-4 hover:bg-teal-700 rounded">Clients</a></li>
                         <li><a href="#" class="block py-2 px-4 hover:bg-teal-700 rounded">Dettes</a></li>
                         <li><a href="#" class="block py-2 px-4 hover:bg-teal-700 rounded">Rapports</a></li>
@@ -147,7 +147,8 @@ use App\Core\Session;
                                             </p>
                                             <p><strong>
                                                     <div class="text-gray-700">Email : <span class="text-blue-400 underline"><?= $data ? $data->email : "" ?></span></div>
-                                                </strong> </p>
+                                                </strong> 
+                                            </p>
                                         </div>
                                     </div>
                                     <div class="space-y-2">
