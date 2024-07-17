@@ -3,6 +3,7 @@ $data = isset($data) && count($data) ? $data[0] : null;
 // var_dump($data);die;
 
 use App\Core\Session;
+use App\Core\Files;
 
 // $data = isset($data) && count($data)?$data[0]:null;
 // $data = $_POST; // Assurez-vous que vos données proviennent correctement du formulaire
@@ -130,7 +131,7 @@ use App\Core\Session;
                                     <button class="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded">Client</button>
                                     <div class="ml-auto">
 
-                                        <a <?= Session::isset("client") ? "href='http://www.diary.shop:8005/newDette'" : "" ?> class="bg-teal-500 text-white ml-2 px-4 py-2 cursor-pointer rounded-md hover:bg-teal-600 focus:outline-none">Nouveau</a>
+                                        <a <?= Session::isset("client") ? "href='http://www.diary.shop:8005/enregistrerdette'" : "" ?> class="bg-teal-500 text-white ml-2 px-4 py-2 cursor-pointer rounded-md hover:bg-teal-600 focus:outline-none">Nouveau</a>
 
                                         <a <?= Session::isset("client") ? "href='http://www.diary.shop:8005/listedette'" : "" ?> class="bg-teal-500 text-white ml-2 px-4 py-2 cursor-pointer rounded-md hover:bg-teal-600 focus:outline-none">Dette</a>
                                     </div>

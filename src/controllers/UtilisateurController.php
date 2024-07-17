@@ -16,9 +16,12 @@ class UtilisateurController extends Controller
             $data = [$this->model->$leNomDuMethode($_REQUEST["telephone"], 0)];
             if ($data[0] != false) {
                 Session::set("client", $data[0]->telephone);
+                Session::set("client_id", $data[0]->id);
             }
         }else{
             Session::unset('client');
+            Session::unset('client_id');
+
         }
 
         foreach (["prenom", "nom", "email", "telephone"] as $champ) {
@@ -62,9 +65,19 @@ class UtilisateurController extends Controller
                 return;
             }
         }
+        // if (isset($_FILES['photo']) && $_FILES['photo']['error'] == UPLOAD_ERR_OK) {
+        //     $files = new Files('./assets/img/'); 
+        //     try {
+        //         $files->load($_FILES['photo']);
+        //         $photoPath = $files->image['path'];
+        //         // Maintenant, ajoutez $photoPath aux données à enregistrer dans la BD
+        //     } catch (\Exception $e) {
+        //         // Gérer l'erreur d'upload
+        //     }
+        // }
 
         $this->renderView("index.php", ["data" => [], "error" => $error]);
     }
-
+   
     
 }

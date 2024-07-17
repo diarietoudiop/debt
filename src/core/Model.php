@@ -83,9 +83,7 @@ abstract class Model
     public function save(array $data)
     {
         if (isset($data['id'])) {
-            // Update
-            unset($data['id']);
-            return $this->database->prepare("UPDATE {$this->table} SET " . $this->buildSetClause($data) . " WHERE id = ?", array_values($data), $this->entityName);
+            return $this->database->prepare("UPDATE {$this->table} SET " . $this->buildSetClause($data) . " WHERE id = :id", $data, $this->entityName);
         } else {
             // Insert
             return $this->database->prepare("INSERT INTO {$this->table} (" . implode(', ', array_keys($data)) . ") VALUES (" . $this->buildPlaceholders($data) . ")", array_values($data), $this->entityName);
@@ -209,5 +207,10 @@ abstract class Model
     {
         $conditions = $this->buildConditions($criteria);
         return $this->database->prepare("DELETE FROM {$this->table} WHERE $conditions", $criteria);
+    }
+
+    function lastId(){
+        $rst = $this->database->getConnection()->query("SELECT MAX(id) as id FROM {$this->table}");
+        return $rst->fetch()["id"];
     }
 }

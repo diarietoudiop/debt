@@ -4,14 +4,9 @@ use App\Core\Controller;
 use App\Core\Session;
 use App\Core\Validator;
 
-
 class PaiementController extends Controller
 {
-
-
-
     public function list($id){
-
         $method = "paiementDette";
         $paiements = $this->model->$method($id);
         $method = "getDette";
@@ -35,8 +30,6 @@ class PaiementController extends Controller
 
             if ($paiement < 1) $error["paiement"][] = "Le paiement doit être au minimum 1 fcfa";
             if ($paiement > $dette->montantRestant) $error["paiement"][] = "Le paiement ne doit pas dépasser le montant restant";
-
-
             if (!$error) {
                 $result = $this->model->save([
                     "vendeur_id" => 1,
@@ -44,8 +37,6 @@ class PaiementController extends Controller
                     "montant" => $paiement,
                     "client_id" => (int)$dette->idClient
                 ]);
-
-
                 if ($result == "succès") {
                     $succes = [
                         "msg" => "Le paiement a été enregistrer avec succes",
@@ -60,7 +51,7 @@ class PaiementController extends Controller
                 }
             }
         }
-
         $this->renderView("paiement.php", ["dette" => $dette, "error" => $error, "id" => $id, "succes" => $succes]);
     }
+    
 }

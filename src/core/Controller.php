@@ -10,15 +10,19 @@ namespace App\Core;
  */
 abstract class Controller{
     protected $model;
+    protected $sesion;
+    protected $validator;
+
 
     public function __construct() {
         Session::start();
+        // Session::close();
 
         $modelName = str_replace("App\\Controller\\", "", static::class);
         $modelName = str_replace("Controller", "", $modelName);
         $this->model = App::getInstance()->getModel($modelName);
     }
-
+    
     /**
      * Redirige vers une autre URL.
      *

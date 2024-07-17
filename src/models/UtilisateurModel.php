@@ -13,7 +13,7 @@ class UtilisateurModel extends Model
         $entityName = "App\\Entity\\DetteClientPaiementEntity";
         $condition = $dette? " AND d.id = :dette":"";
 
-        $sql = "SELECT u.nom, u.prenom, u.telephone, u.photo,u.email,COALESCE(SUM(d.montant), 0) AS montant, 
+        $sql = "SELECT u.id, u.nom, u.prenom, u.telephone, u.photo,u.email,COALESCE(SUM(d.montant), 0) AS montant, 
                 COALESCE(SUM(p.montant), 0) AS montantVerser, COALESCE(SUM(d.montant) - SUM(p.montant), COALESCE(SUM(d.montant), 0)) AS montantRestant
                 FROM Utilisateurs u
                 LEFT JOIN Dettes d ON u.id = d.client_id

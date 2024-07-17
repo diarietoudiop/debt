@@ -43,5 +43,6 @@ class PaiementModel extends Model
             ]);
         });
     }
+   
 
 }
