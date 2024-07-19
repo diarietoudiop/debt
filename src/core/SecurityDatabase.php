@@ -1,9 +1,8 @@
 <?php
-
 namespace App\Core;
-
 use PDO;
 use PDOException;
+use ReflectionClass;
 
 /**
  * Classe SecurityDatabase
@@ -25,17 +24,27 @@ final class SecurityDatabase
         $this->database = App::getDatabase();
     }
 
-
-        /**
+    /**
      * Récupère l'instance de l'application.
      *
      * @return SecurityDatabase L'instance de l'application.
      */
-    public static function getInstance():SecurityDatabase {
+    public static function getInstance(): SecurityDatabase {
         if (self::$instance === null) {
-            self::$instance = new SecurityDatabase();
+            self::$instance = self::createInstance();
         }
         return self::$instance;
+    }
+
+    /**
+     * Crée une instance de SecurityDatabase en utilisant la réflexion.
+     *
+     * @return SecurityDatabase
+     */
+    private static function createInstance(): SecurityDatabase
+    {
+        $reflectionClass = new ReflectionClass(static::class);
+        return $reflectionClass->newInstanceWithoutConstructor();
     }
 
     /**
@@ -47,7 +56,6 @@ final class SecurityDatabase
      */
     public function login($login, $password)
     {
-
         $loginHash = sha1($login);
         $passwordHash = sha1($password);
         $query = "SELECT * FROM Utilisateurs WHERE login = :login AND password = :password";
@@ -58,7 +66,6 @@ final class SecurityDatabase
             Session::set("user_id", $user["id"]);
             return true;
         }
-
         return false;
     }
 
@@ -81,7 +88,7 @@ final class SecurityDatabase
     public function getRoles($userId)
     {
         $query = "SELECT r.libelle FROM `Utilisateurs` u JOIN `Roles` r ON r.id = u.role_id WHERE u.id = :user_id";
-        return $this->database->prepare($query, ["user_id"=>$userId], null, true)["libelle"];
+        return $this->database->prepare($query, ["user_id"=>$userId], "", true)["libelle"]??null;
     }
 
     /**

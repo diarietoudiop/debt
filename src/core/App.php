@@ -1,6 +1,7 @@
 <?php
-
 namespace App\Core;
+
+use ReflectionClass;
 
 /**
  * Classe App
@@ -8,8 +9,7 @@ namespace App\Core;
  *
  * Une classe principale pour gérer l'application.
  */
-class App{
-
+class App {
     private static $database;
     private static $instance;
 
@@ -18,9 +18,9 @@ class App{
      *
      * @return mixed L'instance de la base de données.
      */
-    public static function getDatabase():MysqlDatabase {
+    public static function getDatabase(): MysqlDatabase {
         if (self::$database === null) {
-            self::$database = new MysqlDatabase(DB_HOST, DB_NAME, DB_USERNAME, DB_PASSWORD, DB_TYPE);
+            self::$database = self::createInstance(MysqlDatabase::class, [DB_HOST, DB_NAME, DB_USERNAME, DB_PASSWORD, DB_TYPE]);
         }
         return self::$database;
     }
@@ -30,9 +30,9 @@ class App{
      *
      * @return App L'instance de l'application.
      */
-    public static function getInstance():App {
+    public static function getInstance(): App {
         if (self::$instance === null) {
-            self::$instance = new App();
+            self::$instance = self::createInstance(static::class);
         }
         return self::$instance;
     }
@@ -41,17 +41,26 @@ class App{
      * Récupère un modèle.
      *
      * @param string $model Le nom du modèle à récupérer.
-     * @return Model Le modèle correspondant.
+     * @return Model|null Le modèle correspondant.
      */
     public function getModel(string $model) {
-        
-        $model = "App\\Model\\{$model}Model";
-
-        if(class_exists($model)){
-            $model = new $model();
-            return $model;
+        $modelClass = "App\\Model\\{$model}Model";
+        if (class_exists($modelClass)) {
+            return self::createInstance($modelClass);
         }
         return null;
+    }
+
+    /**
+     * Crée une instance d'une classe en utilisant la réflexion.
+     *
+     * @param string $className Le nom complet de la classe à instancier.
+     * @param array $parameters Les paramètres à passer au constructeur.
+     * @return object L'instance créée.
+     */
+    private static function createInstance(string $className, array $parameters = []): object {
+        $reflectionClass = new ReflectionClass($className);
+        return $reflectionClass->newInstanceArgs($parameters);
     }
 
     /**

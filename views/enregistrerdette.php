@@ -108,7 +108,11 @@
                         </div>
                     </form>
 
+                    <div class="flex justify-between">
                     <h3 class="text-lg font-semibold mb-2">Articles choisis pour la dette</h3>
+                    <button>vider</button>
+                    </div>
+
                     <div class="bg-white rounded-lg shadow-md p-4 mb-6">
                         <table class="w-full mb-4">
                             <thead>
@@ -117,7 +121,7 @@
                                     <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Prix</th>
                                     <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Quantité</th>
                                     <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Montant</th>
-                                    <!-- <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Actions</th> -->
+                                    <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -127,6 +131,8 @@
                                         <td class="px-4 py-2"><?= $art->prixUnitaire ?? "" ?></td>
                                         <td class="px-4 py-2"><?= $art->quantite ?? "" ?></td>
                                         <td class="px-4 py-2"><?= $art->prixUnitaire * $art->quantite ?? "" ?></td>
+                                        <td class="px-4 py-2 text-red"><button>Supprimer</button></td>
+
                                     <?php endforeach; ?>
 
                             </tbody>

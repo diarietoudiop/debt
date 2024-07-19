@@ -26,4 +26,5 @@ class UtilisateurModel extends Model
 
         return $this->prepare($sql, $data, $entityName, true);
     }
+    
 }

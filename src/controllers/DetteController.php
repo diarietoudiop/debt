@@ -11,15 +11,27 @@ class DetteController extends Controller
 
     public function index()
     {
-        $telephone = isset($_GET['telephone']) ? $_GET['telephone'] : '';
-        $method = "detteClient";
-        $data = $this->model->$method($telephone);
-        $data = $this->model->$method($telephone);
+        if (!Session::isset("user_id"))
+            $this->redirect("/login");
+
+        $id = Session::get("client_id");
+        $method = "clientDette";
+        $data = $this->model->$method($id);
+        $this->renderView("listedette.php", $data);
+    }
+
+    public function detteClient()
+    {
+        $telephone = Session::get("user_telephone");
+        $method = "clientDette";
+        $data = $this->model->$method(Session::get("user_id"));
         $this->renderView("listedette.php", $data);
     }
 
     public function list($id)
     {
+        if (!Session::isset("user_id"))
+            $this->redirect("/login");
         $method = "recupererArticle";
         $articles = $this->model->$method($id);
         $this->renderView("details.php", ["articles" => $articles]);
@@ -27,6 +39,8 @@ class DetteController extends Controller
 
     function payer($id)
     {
+        if (!Session::isset("user_id"))
+            $this->redirect("/login");
         $method = "recupererDette";
         $dette = $this->model->$method($id);
         $error = [];
@@ -70,10 +84,11 @@ class DetteController extends Controller
 
     public function enregistrerdette()
     {
+        if (!Session::isset("user_id"))
+            $this->redirect("/login");
         $succes = null;
         if (!Session::isset("total"))
             Session::set("total", 0);
-
 
         list($error, $article) = $this->rechercherArticle();
         if (isset($_REQUEST["ajouter-article"]))
@@ -83,17 +98,18 @@ class DetteController extends Controller
             $succes["msg"] = "La dette n'a pas été enregistrer";
             $succes["status"] = false;
 
-            if($this->enregistrer()){
+            if ($this->enregistrer()) {
                 $succes["msg"] = "La dette a été enregistrer avec succes";
                 $succes["status"] = true;
             }
         }
-
         $this->renderView("enregistrerdette.php", ["error" => $error, "article" => Session::get("article") ?? null, "succes" => $succes]);
     }
 
     private function rechercherArticle()
     {
+        if (!Session::isset("user_id"))
+            $this->redirect("/login");
         $error = $article = null;
         if (isset($_REQUEST["rechercher-article"])) {
             $ref = $_REQUEST["ref"];
@@ -117,6 +133,8 @@ class DetteController extends Controller
 
     public function ajouterArticle()
     {
+        if (!Session::isset("user_id"))
+            $this->redirect("/login");
         $error = null;
         $quantite = $_REQUEST["quantite"];
         $article = Session::get("article");
@@ -132,26 +150,31 @@ class DetteController extends Controller
             if ($quantite <= 0) {
                 $error["quantite"][] = "La quantite doit être supérieur à 0";
             } else {
-                $panierArticles = Session::get("panierArticles") ?? [];
-                $articleEstDansPanier = false;
-                foreach ($panierArticles as $k => $art) {
-                    if ($art->id == $article->id) {
-                        $panierArticles[$k]->quantite += $quantite;
-                        $articleEstDansPanier = true;
-                        break;
+                // Vérifier la quantité disponible en stock
+                if ($quantite > $article->quantite) {
+                    $error["quantite"][] = "La quantité demandée dépasse la quantité disponible en stock";
+                } else {
+                    $panierArticles = Session::get("panierArticles") ?? [];
+                    $articleEstDansPanier = false;
+                    foreach ($panierArticles as $k => $art) {
+                        if ($art->id == $article->id) {
+                            $panierArticles[$k]->quantite += $quantite;
+                            $articleEstDansPanier = true;
+                            break;
+                        }
                     }
-                }
-                if ($articleEstDansPanier == false) {
-                    $article->quantite = $quantite;
-                    $panierArticles[] = $article;
-                }
-                $montant = Session::get("total") ?? 0;
-                $montant += ($quantite * $article->prixUnitaire);
+                    if ($articleEstDansPanier == false) {
+                        $article->quantite = $quantite;
+                        $panierArticles[] = $article;
+                    }
+                    $montant = Session::get("total") ?? 0;
+                    $montant += ($quantite * $article->prixUnitaire);
 
-                Session::set("total", $montant);
-                Session::unset("article");
-                Session::unset("ref");
-                Session::set("panierArticles", $panierArticles);
+                    Session::set("total", $montant);
+                    Session::unset("article");
+                    Session::unset("ref");
+                    Session::set("panierArticles", $panierArticles);
+                }
             }
         }
         return $error;
@@ -159,18 +182,20 @@ class DetteController extends Controller
 
     private function enregistrer()
     {
-        $montant = Session::get("total")??0;
-        $articles = Session::get("panierArticles")??[];
+        if (!Session::isset("user_id"))
+            $this->redirect("/login");
+        $montant = Session::get("total") ?? 0;
+        $articles = Session::get("panierArticles") ?? [];
 
 
-        if($montant && count($articles)){
+        if ($montant && count($articles)) {
             $result = $this->model->save([
                 "montant" => $montant,
                 "articles" => $articles,
                 "client" => Session::get("client_id"),
                 "vendeur" => 1
             ]);
-    
+
             if ($result) {
                 Session::unset("total");
                 Session::unset("panierArticles");

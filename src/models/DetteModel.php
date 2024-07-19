@@ -7,19 +7,44 @@ use App\Core\Model;
 class DetteModel extends Model
 {
 
-    function detteClient(string $telephone)
+    function detteClient(string $telephone, ?string $status = null)
     {
-        $sql = "SELECT d.id, u.prenom,u.nom,u.telephone,d.date,d.montant,  (d.montant - IFNULL(SUM(p.montant), 0)) AS montantRestant
+        $sql = "SELECT d.id, u.prenom, u.nom, u.telephone, d.date, d.montant, 
+                (d.montant - IFNULL(SUM(p.montant), 0)) AS montantRestant
                 FROM Dettes d
                 LEFT JOIN PaiementsDettes pd ON d.id = pd.dette_id
                 LEFT JOIN Paiements p ON pd.paiement_id = p.id
                 INNER JOIN Utilisateurs u ON d.client_id = u.id
-                WHERE u.telephone = :telephone
-                GROUP BY d.id, d.montant, u.prenom, u.nom, u.telephone
-                ORDER BY d.date DESC";
+                WHERE u.telephone = :telephone";
+    
+        if ($status === 'solde') {
+            $sql .= " HAVING montantRestant = 0";
+        } elseif ($status === 'non-solde') {
+            $sql .= " HAVING montantRestant > 0";
+        }
+    
+        $sql .= " GROUP BY d.id, d.montant, u.prenom, u.nom, u.telephone
+                  ORDER BY d.date DESC";
 
+    
         $entityName = "App\\Entity\\DetteClientEntity";
         return $this->prepare($sql, ["telephone" => $telephone], $entityName);
+    }
+
+    function clientDette(int $id)
+    {
+        $sql = "SELECT d.id, u.prenom, u.nom, u.telephone, d.date, d.montant, 
+                (d.montant - IFNULL(SUM(p.montant), 0)) AS montantRestant
+                FROM Dettes d
+                LEFT JOIN PaiementsDettes pd ON d.id = pd.dette_id
+                LEFT JOIN Paiements p ON pd.paiement_id = p.id
+                INNER JOIN Utilisateurs u ON d.client_id = u.id
+                WHERE u.id = :id
+                GROUP BY d.id, d.montant, u.prenom, u.nom, u.telephone
+                ORDER BY d.date DESC";
+    
+        $entityName = "App\\Entity\\DetteClientEntity";
+        return $this->prepare($sql, ["id" => $id], $entityName);
     }
 
     public function recupererArticle(int $id){

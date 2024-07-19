@@ -138,7 +138,7 @@ use App\Core\Files;
                                 </div>
                                 <div class="bg-gray-200 p-4 rounded-lg mb-6">
                                     <div class="flex mb-4">
-                                        <div class="w-24 h-24 bg-gray-300 mr-4 rounded"> <img src="./assets/img/<?= $data ? $data->photo : "photo.jpg" ?>" alt="" class="h-full w-full object-cover"></div>
+                                        <div class="w-24 h-24 bg-gray-300 mr-4 rounded"> <img src="./assets/img/<?= $data ? $data->photo : "" ?>" alt="" class="h-full w-full object-cover"></div>
                                         <div>
                                             <p class="mb-1">
                                             <div class="text-gray-700"><strong>Nom :</strong> <?= $data ? $data->nom : "" ?></div>

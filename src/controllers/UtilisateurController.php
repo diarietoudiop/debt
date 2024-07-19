@@ -10,6 +10,9 @@ class UtilisateurController extends Controller
 {
     public function index()
     {
+        if (!Session::get('user_id') || Session::get('user_role') != 'Vendeur') {
+            $this->redirect('/login');
+        }
         $data = [];
         if (isset($_REQUEST["search"])) {
             $leNomDuMethode = "search";
@@ -65,16 +68,7 @@ class UtilisateurController extends Controller
                 return;
             }
         }
-        // if (isset($_FILES['photo']) && $_FILES['photo']['error'] == UPLOAD_ERR_OK) {
-        //     $files = new Files('./assets/img/'); 
-        //     try {
-        //         $files->load($_FILES['photo']);
-        //         $photoPath = $files->image['path'];
-        //         // Maintenant, ajoutez $photoPath aux données à enregistrer dans la BD
-        //     } catch (\Exception $e) {
-        //         // Gérer l'erreur d'upload
-        //     }
-        // }
+        
 
         $this->renderView("index.php", ["data" => [], "error" => $error]);
     }

@@ -70,7 +70,7 @@ class UtilisateurEntity extends Entity
     }
 
     public function getRole(){
-        return SecurityDatabase::getInstance()->getRoles($this->role_id);
+        return $this->role_id == 1? "Vendeur":"Client";
     }
 
     public function getEmail(){

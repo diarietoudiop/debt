@@ -6,20 +6,22 @@ use App\Core\Session;
 use App\Model\DetteModel;
 
 $detteModel = new DetteModel();
-$data = $detteModel->detteClient(Session::get("client"));
-$data = isset($data) && is_array($data) ? $data : [];
-$totalPages= 5;
-$currentPage= 2;
+// $data = $detteModel->detteClient(Session::get("client"));
+// $data = isset($data) && is_array($data) ? $data : [];
+$totalPages = 3;
+$currentPage = 2;
 ?>
 
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Liste des Dettes</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body class="font-sans bg-gray-100 m-0 p-0">
     <div class="flex h-screen">
         <!-- Sidebar -->
@@ -60,43 +62,42 @@ $currentPage= 2;
             </header>
 
 
-                <!-- Breadcrumb -->
-                <nav class="justify-between px-4 py-3 text-white-700 border border-white sm:flex sm:px-5 bg-gray-50 dark:bg-teal-600 dark:border-gray-700" aria-label="Breadcrumb">
+            <!-- Breadcrumb -->
+            <nav class="justify-between px-4 py-3 text-white-700 border border-white sm:flex sm:px-5 bg-gray-50 dark:bg-teal-600 dark:border-gray-700" aria-label="Breadcrumb">
                 <ol class="inline-flex items-center mb-3 space-x-1 md:space-x-2 rtl:space-x-reverse sm:mb-0">
                     <li>
-                    <div class="flex items-center">
-                        <a href="http://www.diary.shop:8005" class="ms-1 text-sm font-medium text-white-700 hover:text-blue-600 md:ms-2 dark:text-white dark:hover:text-dark">Acceuil</a>
-                    </div>
+                        <div class="flex items-center">
+                            <a href="http://www.diary.shop:8005" class="ms-1 text-sm font-medium text-white-700 hover:text-blue-600 md:ms-2 dark:text-white dark:hover:text-dark">Acceuil</a>
+                        </div>
                     </li>
                     <li aria-current="page">
-                    <div class="flex items-center">
-                        <svg class="rtl:rotate-180 w-3 h-3 mx-1 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
-                        </svg>
-                        <a href="http://www.diary.shop:8005/details" class="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white">Details</a>
-                    </div>
+                        <div class="flex items-center">
+                            <svg class="rtl:rotate-180 w-3 h-3 mx-1 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4" />
+                            </svg>
+                            <a href="http://www.diary.shop:8005//details/{id}" class="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white">Details</a>
+                        </div>
                     </li>
                     <li aria-current="page">
-                    <div class="flex items-center">
-                        <svg class="rtl:rotate-180 w-3 h-3 mx-1 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
-                        </svg>
-                        <a href="" class="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white">Details</a>
-                    </div>
+                        <div class="flex items-center">
+                            <svg class="rtl:rotate-180 w-3 h-3 mx-1 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4" />
+                            </svg>
+                            <a href="" class="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white">Details</a>
+                        </div>
                     </li>
-                   
+
                 </ol>
-                
-                </nav>
+            </nav>
             <!-- Main content -->
             <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 ">
                 <div class="container mx-auto px-6 py-8 shadow-md bg-white mt-4 w-full rounded-lg">
                     <div class="container w-4/5 mx-auto overflow-hidden p-5">
-                        <h1 class="text-center text-2xl font-bold text-gray-800 mb-6">Liste des Dette d'un client</h1>
-                        
-                        <form class="mb-5 flex items-center" method="GET" action="">
-                            <label class="mr-2">Date:</label>
-                            <input type="date" name="date" class="p-2 mr-2 border border-gray-300 rounded-md w-44" value="<?= $_GET['date'] ?? '' ?>">
+                        <h1 class="text-center text-2xl font-bold text-gray-800 mb-6">Liste des Dettes d'un client</h1>
+
+                        <form class="mb-5 flex items-center" method="GET" action="http://www.diary.shop:8005/listedette">
+                            <label class="mr-2">Téléphone:</label>
+                            <input type="text" name="telephone" class="p-2 mr-2 border border-gray-300 rounded-md w-44" value="<?= $_GET['telephone'] ?? '' ?>">
                             <label class="mr-2">Filtrer par:</label>
                             <select name="status" class="p-2 mr-4 border border-gray-300 rounded-md w-44">
                                 <option value="">Tous</option>
@@ -106,47 +107,53 @@ $currentPage= 2;
                             <button type="submit" class="px-3 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Filtrer</button>
                         </form>
                         <div class="flex justify-center">
-                            <?php if (!empty($data)): ?>
+                            <?php if (!empty($data)) : ?>
                                 <div class="text-center">
                                     <strong>Nom</strong> : <span class="border-b p-3"><?= $data[0]->nom ?></span>
                                     <strong>Prénom</strong> : <span class="border-b p-3"><?= $data[0]->prenom ?></span>
                                 </div>
                             <?php endif; ?>
-                         </div>
+                        </div>
                         <table class="w-full border-collapse mt-5 shadow-md">
                             <thead class="bg-gray-200">
                                 <tr>
                                     <th class="p-3 text-center">Date</th>
                                     <th class="p-3 text-center">Montant</th>
                                     <th class="p-3 text-center">Restant</th>
-                                    <th class="p-3 text-center">Paiement</th>
+                                    <?php if ($_SESSION["user_role"] == "Vendeur") : ?>
+                                        <th class="p-3 text-center">Paiement</th>
+                                    <?php endif; ?>
                                     <th class="p-3 text-center">Liste Paiement</th>
                                     <th class="p-3 text-center">Details</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php if (!empty($data)): ?>
-                                    <?php foreach ($data as $dette): ?>
-                                        
-                                    <tr class="hover:bg-gray-100">
-                                        <td class="border-b p-3 text-center"><?= $dette->date ?></td>  
-                                        <td class="border-b p-3 text-center"><?= $dette->montant ?></td>
-                                        <td class="border-b p-3 text-center"><?= $dette->montantRestant ?></td>
-                                        <td class="border-b p-3 text-center">
-                                            <a <?= Session::isset("client") ? "href='http://www.diary.shop:8005/payer/{$dette->id}'" : "" ?> class="bg-green-500 text-white ml-2 px-4 py-2 cursor-pointer rounded-md hover:bg-red-600 focus:outline-none">Payer</a>
-                                        </td>
-                                        <td class="border-b p-3 text-center">
-                                            <a <?= Session::isset("client") ? "href='http://www.diary.shop:8005/listepaiement/{$dette->id}'" : "" ?> class="bg-green-500 text-white ml-2 px-4 py-2 cursor-pointer rounded-md hover:bg-red-600 focus:outline-none">Lister</a>
-                                        </td>
-                                        <td class="border-b p-3 text-center">
-                                           
-                                            <!-- <a  <?= Session::isset("client") ? "href='http://www.diary.shop:8005/details/{$dette->id}'" : "" ?> class="px-3 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 details-btn" >Détails</a> -->
-                                            <a href="/details/<?= $dette->id ?>" class="px-3 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 details-btn">Détails</a>
-                                            
-                                        </td>
-                                    </tr>
+                                <?php if (!empty($data)) : ?>
+                                    <?php foreach ($data as $dette) : ?>
+
+                                        <tr class="hover:bg-gray-100">
+                                            <td class="border-b p-3 text-center"><?= $dette->date ?></td>
+                                            <td class="border-b p-3 text-center"><?= $dette->montant ?></td>
+                                            <td class="border-b p-3 text-center"><?= $dette->montantRestant ?></td>
+                                            <?php if ($_SESSION["user_role"] == "Vendeur") : ?>
+
+                                                <td class="border-b p-3 text-center">
+                                                    <a <?= Session::isset("client") ? "href='http://www.diary.shop:8005/payer/{$dette->id}'" : "" ?> class="bg-teal-600 text-white ml-2 px-4 py-2 cursor-pointer rounded-md hover:bg-teal-700 focus:outline-none">Payer</a>
+                                                </td>
+                                            <?php endif; ?>
+
+                                            <td class="border-b p-3 text-center">
+                                                <a <?= Session::isset("client") ? "href='http://www.diary.shop:8005/listepaiement/{$dette->id}'" : "" ?> class="bg-orange-500 text-white ml-2 px-4 py-2 cursor-pointer rounded-md hover:bg-orange-600 focus:outline-none">Lister</a>
+                                            </td>
+                                            <td class="border-b p-3 text-center">
+
+                                                <!-- <a  <?= Session::isset("client") ? "href='http://www.diary.shop:8005/details/{$dette->id}'" : "" ?> class="px-3 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 details-btn" >Détails</a> -->
+                                                <a href="/details/<?= $dette->id ?>" class="px-3 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 details-btn">Détails</a>
+
+                                            </td>
+                                        </tr>
                                     <?php endforeach; ?>
-                                <?php else: ?>
+                                <?php else : ?>
                                     <tr>
                                         <td colspan="5" class="border-b p-3 text-center">Aucune dette pour ce client.</td>
                                     </tr>
@@ -154,35 +161,36 @@ $currentPage= 2;
                             </tbody>
                         </table>
                         <div class="mt-4 flex justify-center">
-    <?php if ($totalPages > 1): ?>
-        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-            <?php if ($currentPage > 1): ?>
-                <a href="?page=<?= $currentPage - 1 ?>&telephone=<?= $telephone ?>&date=<?= $date ?>&status=<?= $status ?>" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                    Précédent
-                </a>
-            <?php endif; ?>
-            
-            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                <a href="?page=<?= $i ?>&telephone=<?= $telephone ?>&date=<?= $date ?>&status=<?= $status ?>" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium <?= $i === $currentPage ? 'text-indigo-600 bg-indigo-50' : 'text-gray-700 hover:bg-gray-50' ?>">
-                    <?= $i ?>
-                </a>
-            <?php endfor; ?>
-            
-            <?php if ($currentPage < $totalPages): ?>
-                <a href="?page=<?= $currentPage + 1 ?>&telephone=<?= $telephone ?>&date=<?= $date ?>&status=<?= $status ?>" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                    Suivant
-                </a>
-            <?php endif; ?>
-        </nav>
-    <?php endif; ?>
-</div>
-                        
+                            <?php if ($totalPages > 1) : ?>
+                                <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                                    <?php if ($currentPage > 1) : ?>
+                                        <a href="?page=<?= $currentPage - 1 ?>&telephone=<?= $telephone ?>&date=<?= $date ?>&status=<?= $status ?>" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                            Précédent
+                                        </a>
+                                    <?php endif; ?>
+
+                                    <?php for ($i = 1; $i <= $totalPages; $i++) : ?>
+                                        <a href="?page=<?= $i ?>&telephone=<?= $telephone ?>&date=<?= $date ?>&status=<?= $status ?>" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium <?= $i === $currentPage ? 'text-indigo-600 bg-indigo-50' : 'text-gray-700 hover:bg-gray-50' ?>">
+                                            <?= $i ?>
+                                        </a>
+                                    <?php endfor; ?>
+
+                                    <?php if ($currentPage < $totalPages) : ?>
+                                        <a href="?page=<?= $currentPage + 1 ?>&telephone=<?= $telephone ?>&date=<?= $date ?>&status=<?= $status ?>" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                            Suivant
+                                        </a>
+                                    <?php endif; ?>
+                                </nav>
+                            <?php endif; ?>
+                        </div>
+
                     </div>
 
-                    
+
                 </div>
             </main>
         </div>
     </div>
 </body>
+
 </html>

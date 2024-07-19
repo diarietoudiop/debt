@@ -1,4 +1,8 @@
+<?php
+use App\Core\Session;
+?>
 <!DOCTYPE html>
+
 <html lang="fr">
 
 <head>
@@ -53,6 +57,33 @@
                     </div>
                 </div>
             </header>
+            <!-- Breadcrumb -->
+            <nav class="justify-between px-4 py-3 text-white-700 border border-white sm:flex sm:px-5 bg-gray-50 dark:bg-teal-600 dark:border-gray-700" aria-label="Breadcrumb">
+                <ol class="inline-flex items-center mb-3 space-x-1 md:space-x-2 rtl:space-x-reverse sm:mb-0">
+                    <li>
+                        <div class="flex items-center">
+                            <a href="http://www.diary.shop:8005" class="ms-1 text-sm font-medium text-white-700 hover:text-blue-600 md:ms-2 dark:text-white dark:hover:text-dark">Acceuil</a>
+                        </div>
+                    </li>
+                    <li aria-current="page">
+                        <div class="flex items-center">
+                            <svg class="rtl:rotate-180 w-3 h-3 mx-1 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4" />
+                            </svg>
+                            <a href="http://www.diary.shop:8005/listedette" class="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white">liste dette</a>
+                        </div>
+                    </li>
+                    <li aria-current="page">
+                        <div class="flex items-center">
+                            <svg class="rtl:rotate-180 w-3 h-3 mx-1 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4" />
+                            </svg>
+                            <a href="<?= Session::isset("client") ? "href='http://www.diary.shop:8005/payer/{$dette->id}'" : "" ?>" class="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white">paiement</a>
+                        </div>
+                    </li>
+
+                </ol>
+            </nav>
 
             <!-- Main content -->
             <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
