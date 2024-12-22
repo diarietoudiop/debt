@@ -20,6 +20,8 @@
                         <li><a href="#" class="block py-2 px-4 hover:bg-gray-700 rounded">Dettes</a></li>
                         <li><a href="#" class="block py-2 px-4 hover:bg-gray-700 rounded">Rapports</a></li>
                         <li><a href="#" class="block py-2 px-4 hover:bg-gray-700 rounded">Paramètres</a></li>
+                        <li><a href="#" class="block py-2 px-4 hover:bg-teal-700 rounded">Deconnexion</a></li>
+
                     </ul>
                 </nav>
             </div>

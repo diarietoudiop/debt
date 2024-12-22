@@ -53,8 +53,7 @@ class DetteController extends Controller
 
             if ($paiement < 1) $error["paiement"][] = "Le paiement doit être au minimum 1 fcfa";
             if ($paiement > $dette->montantRestant) $error["paiement"][] = "Le paiement ne doit pas dépasser le montant restant";
-
-
+            
             if (!$error) {
                 $result = $this->model->save([
                     "vendeur_id" => 1,
@@ -102,6 +101,9 @@ class DetteController extends Controller
                 $succes["msg"] = "La dette a été enregistrer avec succes";
                 $succes["status"] = true;
             }
+        }
+        if (isset($_REQUEST["supprimer-article"])) {
+            $this->supprimerArticle();
         }
         $this->renderView("enregistrerdette.php", ["error" => $error, "article" => Session::get("article") ?? null, "succes" => $succes]);
     }
@@ -204,4 +206,24 @@ class DetteController extends Controller
         }
         return false;
     }
+
+    public function supprimerArticle() {
+        if (isset($_POST['supprimer-article'])||isset($_POST['vider'])) {
+            $id = $_POST['id'];
+    
+            if (isset($_SESSION["panierArticles"])) {
+                foreach ($_SESSION["panierArticles"] as $key => $article) {
+                    $condition = isset($_POST['vider'])? true : $article->id == $id ;
+                    if ($condition) {
+                        $total = Session::get("total") - ($article->prixUnitaire * $article->quantite);
+                        Session::set("total", $total);
+                        unset($_SESSION["panierArticles"][$key]);
+                        $_SESSION["panierArticles"] = array_values($_SESSION["panierArticles"]); 
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    
 }

@@ -15,6 +15,7 @@ Route::get("/enregistrerdette", [App\Controller\DetteController::class, "enregis
 
 
 
+
 Route::post("/", [\App\Controller\UtilisateurController::class, "index"]);
 Route::post("/add-client", [\App\Controller\UtilisateurController::class, "addClient"]);
 Route::post("/listedette", [App\Controller\DetteController::class, "index"]);

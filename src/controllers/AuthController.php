@@ -14,7 +14,6 @@ class AuthController extends Controller
             $password = $_POST['password'] ?? '';
             $method = 'authenticateUser';
             $user = $this->model->$method($login, $password);
-            
             if ($user) {
                 Session::set('user_id', $user->getId());
                 Session::set('user_role', $user->getRole());

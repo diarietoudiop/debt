@@ -5,14 +5,6 @@ $data = isset($data) && count($data) ? $data[0] : null;
 use App\Core\Session;
 use App\Core\Files;
 
-// $data = isset($data) && count($data)?$data[0]:null;
-// $data = $_POST; // Assurez-vous que vos données proviennent correctement du formulaire
-// $error = Validator::validate($data, $rules); // $rules doit être défini selon vos besoins
-
-// // Stockage des données saisies en session pour les champs non validés
-// foreach ($data as $key => $value) {
-//     Session::set($key, $value);
-// }
 
 ?>
 <!DOCTYPE html>
@@ -41,6 +33,8 @@ use App\Core\Files;
                         <li><a href="#" class="block py-2 px-4 hover:bg-teal-700 rounded">Dettes</a></li>
                         <li><a href="#" class="block py-2 px-4 hover:bg-teal-700 rounded">Rapports</a></li>
                         <li><a href="#" class="block py-2 px-4 hover:bg-teal-700 rounded">Paramètres</a></li>
+                        <li><a href="#" class="block py-2 px-4 hover:bg-teal-700 rounded">Deconnexion</a></li>
+
                     </ul>
                 </nav>
             </div>
@@ -172,7 +166,7 @@ use App\Core\Files;
             </main>
         </div>
     </div>
-    <!-- Script JavaScript pour afficher le popup -->
+    
     
 </body>
 

@@ -26,6 +26,8 @@
                 <a href="#" class="block py-2 px-4 hover:bg-indigo-700 rounded transition duration-200">Dettes</a>
                 <a href="#" class="block py-2 px-4 hover:bg-indigo-700 rounded transition duration-200">Rapports</a>
                 <a href="#" class="block py-2 px-4 hover:bg-indigo-700 rounded transition duration-200">Paramètres</a>
+                <li><a href="#" class="block py-2 px-4 hover:bg-teal-700 rounded">Deconnexion</a></li>
+
             </nav>
         </div>
 
@@ -52,7 +54,7 @@
                 </div>
             </header>
 
-            <!-- Main content area -->
+            
             <!-- Main content area -->
             <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-6">
                 <div class="max-w-6xl mx-auto bg-white rounded-lg shadow-md p-6">
@@ -110,7 +112,9 @@
 
                     <div class="flex justify-between">
                     <h3 class="text-lg font-semibold mb-2">Articles choisis pour la dette</h3>
-                    <button>vider</button>
+                    <form method="post" action="http://www.diary.shop:8005/enregistrerdette">
+                        <button type="submit" name="vider"  class="bg-red-500 text-white px-4 py-2 rounded-md  hover:bg-red-600 focus:outline-none focus:ring-2  transition duration-200">vider</button>
+                    </form>
                     </div>
 
                     <div class="bg-white rounded-lg shadow-md p-4 mb-6">
@@ -126,14 +130,19 @@
                             </thead>
                             <tbody>
                                 <?php foreach ($_SESSION["panierArticles"] ?? [] as $art): ?>
-                                    <tr>
+                                    <tr id="article-row-<?= $key ?>">
                                         <td class="px-4 py-2"><?= $art->libelle ?? "" ?></td>
                                         <td class="px-4 py-2"><?= $art->prixUnitaire ?? "" ?></td>
                                         <td class="px-4 py-2"><?= $art->quantite ?? "" ?></td>
                                         <td class="px-4 py-2"><?= $art->prixUnitaire * $art->quantite ?? "" ?></td>
-                                        <td class="px-4 py-2 text-red"><button>Supprimer</button></td>
-
-                                    <?php endforeach; ?>
+                                        <td class="border px-4 py-2">
+                                            <form method="post" action="http://www.diary.shop:8005/enregistrerdette">
+                                                <input type="hidden" name="id" value="<?= $art->id ?? "" ?>">
+                                                <button  type="submit" name="supprimer-article" class="bg-red-500 text-white px-4 py-2  hover:bg-red-600  rounded-md transition duration-200">Supprimer</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
 
                             </tbody>
                         </table>

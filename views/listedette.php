@@ -6,8 +6,6 @@ use App\Core\Session;
 use App\Model\DetteModel;
 
 $detteModel = new DetteModel();
-// $data = $detteModel->detteClient(Session::get("client"));
-// $data = isset($data) && is_array($data) ? $data : [];
 $totalPages = 3;
 $currentPage = 2;
 ?>
@@ -35,6 +33,8 @@ $currentPage = 2;
                         <li><a href="#" class="block py-2 px-4 hover:bg-gray-700 rounded">Dettes</a></li>
                         <li><a href="#" class="block py-2 px-4 hover:bg-gray-700 rounded">Rapports</a></li>
                         <li><a href="#" class="block py-2 px-4 hover:bg-gray-700 rounded">Paramètres</a></li>
+                        <li><a href="#" class="block py-2 px-4 hover:bg-teal-700 rounded">Deconnexion</a></li>
+
                     </ul>
                 </nav>
             </div>
@@ -75,17 +75,10 @@ $currentPage = 2;
                             <svg class="rtl:rotate-180 w-3 h-3 mx-1 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4" />
                             </svg>
-                            <a href="http://www.diary.shop:8005//details/{id}" class="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white">Details</a>
+                            <a href="http://www.diary.shop:8005/listedette" class="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white">liste dette</a>
                         </div>
                     </li>
-                    <li aria-current="page">
-                        <div class="flex items-center">
-                            <svg class="rtl:rotate-180 w-3 h-3 mx-1 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4" />
-                            </svg>
-                            <a href="" class="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white">Details</a>
-                        </div>
-                    </li>
+                   
 
                 </ol>
             </nav>
