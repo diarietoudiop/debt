@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/var/www/html
+    networks:
+      - app-network
+    container_name: app
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8006:80"
+    volumes:
+      - .:/var/www/html
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - app
+    networks:
+      - app-network
+    container_name: nginx
+
+networks:
+  app-network:
+    driver: bridge
