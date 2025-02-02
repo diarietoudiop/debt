@@ -35,6 +35,11 @@ WORKDIR /var/www/html
 # Copier les fichiers de l'application
 COPY . .
 
+# Ajoutez ces nouvelles lignes ici
+COPY php-fpm.conf /usr/local/etc/php-fpm.d/www.conf
+RUN mkdir -p /var/run/php-fpm && \
+    chown -R appuser:appuser /var/run/php-fpm
+
 # Donner les permissions appropriées
 RUN chown -R appuser:appuser /var/www/html \
     && chmod -R 755 /var/www/html \
