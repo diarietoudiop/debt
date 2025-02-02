@@ -13,7 +13,7 @@ services:
   nginx:
     image: nginx:latest
     ports:
-      - "8006:80"
+      - "8005:80"
     volumes:
       - .:/var/www/html
       - ./nginx/conf.d:/etc/nginx/conf.d
